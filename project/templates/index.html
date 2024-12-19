@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Green Areas Finder</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h1 {
+            color: #2d6a4f;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        label {
+            font-size: 1rem;
+            color: #555;
+        }
+        input[type="text"] {
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 12px 20px;
+            background-color: #2d6a4f;
+            color: white;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #1b4e31;
+        }
+        .results {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .error {
+            color: red;
+            margin-top: 20px;
+            text-align: center;
+            font-size: 1rem;
+        }
+        .link {
+            color: #2d6a4f;
+            text-decoration: none;
+        }
+        .link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Find Green Areas in Your City</h1>
+        <form method="POST" action="/">
+            <label for="city">City:</label>
+            <input type="text" id="city" name="city" placeholder="Enter city" required>
+
+            <label for="country">Country:</label>
+            <input type="text" id="country" name="country" placeholder="Enter country" required>
+
+            <button type="submit">
+                Show Green Areas
+            </button>
+        </form>
+
+        <div id="results" class="results"></div>
+
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+    </div>
+
+    <script>
+    const form = document.querySelector("form");
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault(); // Prevent default form reload
+
+        // Gather form data
+        const formData = new FormData(form);
+
+        try {
+            // Send POST request to the server
+            const response = await fetch("/", {
+                method: "POST",
+                body: formData
+            });
+
+            // Parse the JSON response
+            const data = await response.json();
+
+            // Open the map in a new window
+            window.open(data.map_url, "_blank");
+
+            // Optionally, show a message or download link in the current page
+            document.getElementById("results").innerHTML = `
+                <h3>Interactive Map is now open in a new tab!</h3>
+                <p>📍 <a href="${data.geojson_url}" class="link" target="_blank">Download GeoJSON File</a></p>
+            `;
+        } catch (error) {
+            console.error("Error:", error);
+            document.getElementById("results").innerHTML = `<p class="error">An error occurred. Please try again.</p>`;
+        }
+    });
+    </script>
+</body>
+</html>

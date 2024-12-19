@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Green Areas in {{ city }}, {{ country }}</title>
+</head>
+<body style="margin: 0; padding: 0;">
+    <h1 style="text-align: center; margin: 10px;">Green Areas in {{ city }}, {{ country }}</h1>
+    <iframe src="{{ map_path }}" 
+            width="100%" 
+            height="800px" 
+            style="border: none;">
+    </iframe>
+    <br>
+    <a href="/" style="display: block; text-align: center; margin-top: 20px;">Search Another City</a>
+</body>
+</html>
